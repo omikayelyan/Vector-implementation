@@ -49,7 +49,7 @@ Vector<T>::Vector(const Vector <T>& oth):
     m_cap{oth.m_cap},
     m_size{oth.m_size},
     m_buf{}
-{
+    {
 	if(!oth.empty())
 	{
 		m_buf = new T[m_cap];
@@ -58,7 +58,7 @@ Vector<T>::Vector(const Vector <T>& oth):
 		    m_buf[i] = oth.m_buf[i];
 		}
 	}
-}
+    }
 
 template <typename T>
 Vector<T>::Vector(Vector&& tmp):
