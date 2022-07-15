@@ -11,9 +11,10 @@ public:
   Vector(size_t);
   Vector(size_t,T);
   Vector(std::initializer_list<T>);
-  ~Vector();
   Vector& operator=(const Vector<T>&);
   Vector& operator=(Vector<T>&&);
+  ~Vector();
+public:  
   void push_back(const T&);
   void push_back(T&&);
   void pop_back();
@@ -30,6 +31,7 @@ public:
   T& operator[](size_t);
   const T& operator[](size_t) const;
   void shrink_to_fit();
+  
 private:
   size_t m_cap;
   size_t m_size;
@@ -44,17 +46,17 @@ Vector<T>::Vector():m_cap{1},m_size{},m_buf{}
 
 template <typename T>
 Vector<T>::Vector(const Vector <T>& oth):
-m_cap{oth.m_cap},
-m_size{oth.m_size},
-m_buf{}
+    m_cap{oth.m_cap},
+    m_size{oth.m_size},
+    m_buf{}
 {
 	if(!oth.empty())
 	{
 		m_buf = new T[m_cap];
-	for(int i = 0;i < m_size;++i)
-	{
-		m_buf[i] = oth.m_buf[i];
-	}
+		for(int i = 0;i < m_size;++i)
+		{
+		    m_buf[i] = oth.m_buf[i];
+		}
 	}
 }
 
@@ -105,42 +107,42 @@ Vector<T>::Vector(std::initializer_list<T> init):
 
 template <typename T>
 Vector<T>::~Vector()
+{
+    if(m_buf)
     {
-        if(m_buf)
-        {
-            delete[] m_buf;
-        }
+        delete[] m_buf;
     }
+}
 
 template <typename T>
 Vector<T>& Vector<T>::operator=(const Vector<T>& oth)
+{
+    if(this == &oth)
     {
-        if(this == &oth)
-        {
-            return *this;
-        }
-        if(this->m_buf)
-        {
-            delete[] m_buf;
-        }
-        m_cap = oth.m_cap;
-        m_size = oth.m_size;
-        m_buf = new T[m_cap];
-        for(int i = 0;i < m_size;i++)
-        {
-            m_buf[i] = oth.m_buf[i];
-        }
         return *this;
     }
+    if(this->m_buf)
+    {
+        delete[] m_buf;
+    }
+    m_cap = oth.m_cap;
+    m_size = oth.m_size;
+    m_buf = new T[m_cap];
+    for(int i = 0;i < m_size;i++)
+    {
+        m_buf[i] = oth.m_buf[i];
+    }
+    return *this;
+}
     
 template <typename T>
 Vector<T>& Vector<T>::operator=(Vector<T>&& tmp)
-    {
-        std::swap(m_cap,tmp.m_cap);
-        std::swap(m_size,tmp.m_size);
-        std::swap(m_buf,tmp.m_buf);
-        return *this;
-    }
+{
+    std::swap(m_cap,tmp.m_cap);
+    std::swap(m_size,tmp.m_size);
+    std::swap(m_buf,tmp.m_buf);
+    return *this;
+}
 
 template <typename T>
 void Vector<T>::push_back(const T& val)
