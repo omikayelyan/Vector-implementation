@@ -5,63 +5,61 @@ template <typename T>
 class Vector
 {
 public:
-  Vector();
-  Vector(const Vector<T>&);
-  Vector(Vector<T>&&);
-  Vector(size_t);
-  Vector(size_t,T);
-  Vector(std::initializer_list<T>);
-  Vector& operator=(const Vector<T>&);
-  Vector& operator=(Vector<T>&&);
-  ~Vector();
-public:  
-  void push_back(const T&);
-  void push_back(T&&);
-  void pop_back();
-  void insert(size_t pos,const T&);
-  void insert(size_t,T&&);
-  bool empty() const;
-  size_t size() const;
-  size_t capacity() const;
-  void clear();
-  void resize(size_t);
-  void erase(size_t);
-  T& at(size_t);
-  const T& at(size_t) const;
-  T& operator[](size_t);
-  const T& operator[](size_t) const;
-  void shrink_to_fit();
-  
+    Vector();
+    Vector(const Vector<T> &);
+    Vector(Vector<T> &&);
+    Vector(size_t);
+    Vector(size_t, T);
+    Vector(std::initializer_list<T>);
+    Vector& operator=(const Vector<T> &);
+    Vector& operator=(Vector<T> &&);
+    ~Vector();
+public:
+    void push_back(const T&);
+    void push_back(T&&);
+    void pop_back();
+    void insert(size_t pos, const T&);
+    size_t size() const;
+    size_t capacity() const;
+    void clear();
+    void resize(size_t);
+    void erase(size_t);
+    bool empty() const;
+    void shrink_to_fit();
+    T& at(size_t);
+    const T& at(size_t) const;
+    T& operator[](size_t);
+    const T& operator[](size_t) const;
+    void print() const;
 private:
-  size_t m_cap;
-  size_t m_size;
-  T* m_buf;
+    size_t m_size;
+    size_t m_cap;
+    T *m_buf;
 };
 
 template <typename T>
-Vector<T>::Vector():m_cap{1},m_size{},m_buf{}
+Vector<T>::Vector() : m_cap{1}, m_size{}, m_buf{}
 {
-    
 }
 
 template <typename T>
-Vector<T>::Vector(const Vector <T>& oth):
+Vector<T>::Vector(const Vector<T> &oth) :
     m_cap{oth.m_cap},
     m_size{oth.m_size},
     m_buf{}
     {
-	if(!oth.empty())
-	{
-		m_buf = new T[m_cap];
-		for(int i = 0;i < m_size;++i)
-		{
-		    m_buf[i] = oth.m_buf[i];
-		}
-	}
+        if (!oth.empty())
+        {
+            m_buf = new T[m_cap];
+            for (int i = 0; i < m_size; ++i)
+            {
+                m_buf[i] = oth.m_buf[i];
+            }
+        }
     }
-
+    
 template <typename T>
-Vector<T>::Vector(Vector&& tmp):
+Vector<T>::Vector(Vector<T> &&tmp) :
     m_cap{tmp.m_cap},
     m_size{tmp.m_size},
     m_buf{tmp.m_buf}
@@ -70,121 +68,120 @@ Vector<T>::Vector(Vector&& tmp):
         tmp.m_size = 0;
         tmp.m_buf = nullptr;
     }
-
+    
 template <typename T>
-Vector<T>::Vector(size_t count,T val):
+Vector<T>::Vector(size_t count) :
     m_cap{count},
     m_size{count},
     m_buf{new T[m_cap]}
     {
-    for(int i = 0;i < m_size;i++)
-    {
-        m_buf[i] = val;
     }
-}
-
+    
 template <typename T>
-Vector<T>::Vector(size_t count):
+Vector<T>::Vector(size_t count, T val) :
     m_cap{count},
     m_size{count},
     m_buf{new T[m_cap]}
     {
-        
+        for (int i = 0; i < m_size; i++)
+        {
+            m_buf[i] = val;
+        }
     }
-
+    
 template <typename T>
-Vector<T>::Vector(std::initializer_list<T> init):
-    m_cap(init.size()),
-    m_size(m_cap),
-    m_buf(new T[m_cap])
+Vector<T>::Vector(std::initializer_list<T> init) :
+    m_cap{init.size()},
+    m_size{m_cap},
+    m_buf{new T[m_cap]}
     {
         int i = 0;
-        for(auto it = init.begin();it != init.end();++it)
+        for (auto it = init.begin(); it != init.end(); ++it)
         {
             m_buf[i++] = *it;
         }
     }
-
-template <typename T>
-Vector<T>::~Vector()
-{
-    if(m_buf)
-    {
-        delete[] m_buf;
-    }
-}
-
+    
 template <typename T>
 Vector<T>& Vector<T>::operator=(const Vector<T>& oth)
 {
-    if(this == &oth)
+    if (this == &oth)
     {
         return *this;
     }
-    if(this->m_buf)
+    if (this->m_buf)
     {
         delete[] m_buf;
     }
     m_cap = oth.m_cap;
     m_size = oth.m_size;
     m_buf = new T[m_cap];
-    for(int i = 0;i < m_size;i++)
+    for (int i = 0; i < m_size; i++)
     {
         m_buf[i] = oth.m_buf[i];
     }
     return *this;
 }
-    
+
 template <typename T>
 Vector<T>& Vector<T>::operator=(Vector<T>&& tmp)
 {
-    std::swap(m_cap,tmp.m_cap);
-    std::swap(m_size,tmp.m_size);
-    std::swap(m_buf,tmp.m_buf);
+    std::swap(m_cap, tmp.m_cap);
+    std::swap(m_size, tmp.m_size);
+    std::swap(m_buf, tmp.m_buf);
     return *this;
+}
+
+template <typename T>
+Vector<T>::~Vector()
+{
+    if (m_buf)
+    {
+        delete[] m_buf;
+    }
 }
 
 template <typename T>
 void Vector<T>::push_back(const T& val)
 {
-	if(this -> empty())
-	{
-		m_buf = new T[m_cap];
-		m_buf[m_size++] = val; 
-	}
-	else
-	{
-		if(m_size < m_cap)
-		{
-			m_buf[m_size++] = val;
-		}
-		else
-		{
-			m_cap *= 2;
-			T* tmp = new T[m_cap];
-			for(int i = 0;i < m_size;++i)
-			{
-				tmp[i] = m_buf[i];
-			}
-			delete[] m_buf;
-			m_buf = tmp;
-			tmp = nullptr;
-			m_buf[m_size++] = val;
-		}
-	}
+    if (this->empty())
+    {
+        m_buf = new T[m_cap];
+	m_buf[m_size++] = val;
+    }
+    else
+    {
+        if (m_size < m_cap)
+        {
+            m_buf[m_size++] = val;
+        }
+        else
+        {
+            m_cap *= 2;
+            T *tmp = new T[m_cap];
+            for (int i = 0; i < m_size; ++i)
+            {
+                tmp[i] = m_buf[i];
+            }
+            delete[] m_buf;
+            m_buf = tmp;
+            tmp = nullptr;
+            m_buf[m_size++] = val;
+        }
+    }
 }
 
 template <typename T>
 void Vector<T>::push_back(T&& val)
 {
-	if(this -> empty())
+	if (this->empty())
 	{
 		m_buf = new T[m_cap];
 		m_buf[m_size++] = std::move(val); 
 	}
 	else
 	{
-		if(m_size < m_cap)
+		if (m_size < m_cap)
 		{
 			m_buf[m_size++] = std::move(val);
 		}
@@ -192,7 +189,7 @@ void Vector<T>::push_back(T&& val)
 		{
 			m_cap *= 2;
 			T* tmp = new T[m_cap];
-			for(int i = 0;i < m_size;++i)
+			for (int i = 0; i < m_size; ++i)
 			{
 				tmp[i] = m_buf[i];
 			}
@@ -207,96 +204,42 @@ void Vector<T>::push_back(T&& val)
 template <typename T>
 void Vector<T>::pop_back()
 {
-	if(!this -> empty())
-	{
-		m_buf[m_size--] = T{};
-	}
+    if (!this->empty())
+    {
+        m_buf[m_size--] = T{};
+    }
 }
 
 template <typename T>
-void Vector<T>::insert(size_t pos,const T& val)
+void Vector<T>::insert(size_t pos, const T& val)
 {
-	if(this -> empty())
+	if (m_size < m_cap)
 	{
-		m_buf = new T[m_cap];
-		m_buf = val;
+		for (int i = m_size - 1; i >= pos; --i)
+		{
+			m_buf[i + 1] = m_buf[i];
+		}
+		m_buf[pos] = val;
+		++m_size;
 	}
 	else
 	{
-		if(m_size != m_cap)
+		m_cap *= 2;
+		T* tmp = new T[m_cap];
+		for (int i = 0; i < pos; ++i)
 		{
-			for(int i = m_size - 1;i >= pos;--i)
-			{
-				m_buf[i + 1] = m_buf[i];
-			}
-			m_buf[pos] = val;
-			++m_size;
+			tmp[i] = m_buf[i];
 		}
-		else
+		tmp[pos] = val;
+		for (int i = m_size; i > pos; --i)
 		{
-			m_cap *= 2;
-			T* tmp = new T[m_cap];
-			for(int i = 0;i < pos;++i)
-			{
-				tmp[i] = m_buf[i];
-			}
-			tmp[pos] = val;
-			for(int i = m_size;i > pos;--i)
-			{
-				tmp[i] = m_buf[i - 1];
-			}
-			delete[] m_buf;
-			m_buf = tmp;
-			tmp = nullptr;
-			++m_size;
+			tmp[i] = m_buf[i - 1];
 		}
+		delete[] m_buf;
+		m_buf = tmp;
+		tmp = nullptr;
+		++m_size;
 	}
-}
-
-template <typename T>
-void Vector<T>::insert(size_t pos,T&& val)
-{
-	if(this -> empty())
-	{
-		m_buf = new T[m_cap];
-		m_buf = std::move(val);
-	}
-	else
-	{
-		if(m_size != m_cap)
-		{
-			for(int i = m_size - 1;i >= pos;--i)
-			{
-				m_buf[i + 1] = m_buf[i];
-			}
-			m_buf[pos] = std::move(val);
-			++m_size;
-		}
-		else
-		{
-			m_cap *= 2;
-			T* tmp = new T[m_cap];
-			for(int i = 0;i < pos;++i)
-			{
-				tmp[i] = m_buf[i];
-			}
-			tmp[pos] = std::move(val);
-			for(int i = m_size;i > pos;--i)
-			{
-				tmp[i] = m_buf[i - 1];
-			}
-			delete[] m_buf;
-			m_buf = tmp;
-			tmp = nullptr;
-			++m_size;
-		}
-	}
-}
-
-template <typename T>
-bool Vector<T>::empty() const
-{
-	return !m_buf;
 }
 
 template <typename T>
@@ -314,7 +257,7 @@ size_t Vector<T>::capacity() const
 template <typename T>
 void Vector<T>::clear()
 {
-	if(!this -> empty())
+	if (!this->empty())
 	{
 		delete[] m_buf;
 		m_cap = 1;
@@ -325,17 +268,56 @@ void Vector<T>::clear()
 template <typename T>
 void Vector<T>::resize(size_t cap)
 {
-	if(m_cap < cap)
+    if (m_cap < cap)
+    {
+        m_cap = cap;
+        if (this->empty())
+        {
+            m_buf = new T[m_cap];
+        }
+        else
+        {
+            T* tmp = new T[m_cap];
+            for (int i = 0; i < m_size; ++i)
+            {
+                tmp[i] = m_buf[i];
+            }
+            delete m_buf;
+            m_buf = tmp;
+            tmp = nullptr;
+        }
+    }
+}
+
+template <typename T>
+void Vector<T>::erase(size_t pos)
+{
+	if (!this->empty())
 	{
-		m_cap = cap;
-		if(this -> empty())
+		for (int i = m_size - 1; i > pos; --i)
 		{
-			m_buf = new T[m_cap];
+			m_buf[i - 1] = m_buf[i];
 		}
-		else
+		--m_size;
+	}
+}
+
+template <typename T>
+bool Vector<T>::empty() const
+{
+	return !m_buf;
+}
+
+template <typename T>
+void Vector<T>::shrink_to_fit()
+{
+	if (!this->empty())
+	{
+		if (m_size != m_cap)
 		{
+			m_cap = m_size;
 			T* tmp = new T[m_cap];
-			for(int i = 0;i < m_size;++i)
+			for (int i = 0; i < m_size; ++i)
 			{
 				tmp[i] = m_buf[i];
 			}
@@ -349,7 +331,7 @@ void Vector<T>::resize(size_t cap)
 template <typename T>
 T& Vector<T>::at(size_t index)
 {
-	if(index >= m_size)
+	if (index >= m_size)
 	{
 		throw std::out_of_range("");
 	}
@@ -359,7 +341,7 @@ T& Vector<T>::at(size_t index)
 template <typename T>
 const T& Vector<T>::at(size_t index) const
 {
-	if(index >= m_size)
+	if (index >= m_size)
 	{
 		throw std::out_of_range("");
 	}
@@ -379,45 +361,28 @@ const T& Vector<T>::operator[](size_t ind) const
 }
 
 template <typename T>
-void Vector<T>::shrink_to_fit()
+void Vector<T>::print() const
 {
-	if(!this -> empty())
-	{
-		if(m_size != m_cap)
-		{
-			m_cap = m_size;
-			T* tmp = new T[m_cap];
-			for(int i = 0;i < m_size;++i)
-			{
-				tmp[i] = m_buf[i];
-			}
-			delete[] m_buf;
-			m_buf = tmp;
-			tmp = nullptr;
-		}
-	}
-}
-
-template<typename T>
-void Vector<T>::erase(size_t pos)
-{
-	if(!this -> empty())
-	{
-		for(int i = m_size - 1;i > pos;--i)
-		{
-			m_buf[i - 1] = m_buf[i];
-		}
-		--m_size;
-	}
-}
+    for (int i = 0; i < m_size; ++i)
+    {
+        std::cout << m_buf[i] << std::endl;
+    }
+} 
 
 int main()
 {
     Vector<int> obj;
-    obj.push_back(7);
-    obj.push_back(9);
-    obj.push_back(11);
+    obj.push_back(1);
+    obj.push_back(2);
+    obj.insert(2, 3);
+    obj.push_back(4);
+    obj[3] = 7;
+    obj.push_back(6);
     obj.pop_back();
-    std::cout << "Vector size: " << obj.size() << std::endl << "Vector capacity: " << obj.capacity() << std::endl
-    << "At() function: " << obj.at(1);
+    std::cout << "Elements:" << std::endl;
+    obj.print();
+    std::cout << "Vector size:" << obj.size() << std::endl << "Vector capacity:" << obj.capacity() << std::endl;
+    obj.shrink_to_fit();
+    std::cout << "After shrink_to_fit function: " << std::endl << 
+    "Vector size: " << obj.size() << std::endl << "Vector capacity: " << obj.capacity();
 }
